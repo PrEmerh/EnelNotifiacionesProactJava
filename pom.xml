@@ -166,28 +166,6 @@
 			<artifactId>json</artifactId>
 			<version>${json.version}</version>
 		</dependency>
-		<!-- Quartz -->
-		<dependency>
-			<groupId>org.quartz-scheduler</groupId>
-			<artifactId>quartz</artifactId>
-			<version>${quartz.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.quartz-scheduler</groupId>
-			<artifactId>quartz-jobs</artifactId>
-			<version>${quartz-jobs.version}</version>
-		</dependency>
-		<!-- SalesForce -->
-		<dependency>
-			<groupId>com.force.api</groupId>
-			<artifactId>force-rest-api</artifactId>
-			<version>${force-rest-api.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.force.sdk</groupId>
-			<artifactId>force-oauth</artifactId>
-			<version>${force-oauth.version}</version>
-		</dependency>
 		<!-- CXF Web Services -->
 		<dependency>
 		    <groupId>org.apache.cxf</groupId>
@@ -287,45 +265,6 @@
 					<appName>chile-en-dev-bulkapi</appName>
 				</configuration>
 			</plugin>
-			<!-- Configuracion CXF para generar las clases cliente de los servicios web -->
-			<!-- Tenerlo comentado para evitar que genere las clases cada vez que compile. -->
-			<!-- <plugin>
-			    <groupId>org.apache.cxf</groupId>
-			    <artifactId>cxf-codegen-plugin</artifactId>
-			    <version>${cxf.version}</version>
-			    <executions>
-			        <execution>
-			            <id>generate-sources</id>
-			            <phase>generate-sources</phase>
-			            <configuration>
-			            	<defaultOptions>
-							    <noAddressBinding>true</noAddressBinding>
-							</defaultOptions>
-			                <sourceRoot>${project.build.directory}/generated/cxf</sourceRoot>
-			                <wsdlOptions>
-			                    <wsdlOption>
-			                        <wsdl>${basedir}/src/main/resources/webservices/wsdl/SIEME009.WSDL</wsdl>
-			                        <extraargs>
-			                        	<extraarg>-client</extraarg>
-			                        	<extraarg>-verboset</extraarg>
-			                        	<extraarg>-p</extraarg>
-			                        	<extraarg>your.namespace/services/=your.package</extraarg>
-			                        </extraargs>
-			                    </wsdlOption>
-			                    <wsdlOption>
-			                        <wsdl>${basedir}/src/main/resources/webservices/wsdl/SIRES033.WSDL</wsdl>
-			                    </wsdlOption>
-			                    <wsdlOption>
-			                        <wsdl>${basedir}/src/main/resources/webservices/wsdl/SIEME002.WSDL</wsdl>
-			                    </wsdlOption>
-			                </wsdlOptions>
-			            </configuration>
-			            <goals>
-			                <goal>wsdl2java</goal>
-			            </goals>
-			        </execution>
-			    </executions>
-			</plugin> -->
 		</plugins>
 	</build>
 </project>

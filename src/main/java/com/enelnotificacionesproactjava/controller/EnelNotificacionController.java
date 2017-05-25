@@ -1,21 +1,37 @@
 package com.enelnotificacionesproactjava.controller;
-
+import javax.ws.rs.Consumes;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
+
+
+
+
+/**
+ * Metodo al que se accede tras hacer submit en el login. Si el usuario existe nos lleva al jsp Hello y se guarda un User en session.
+ * Si el usuario no existe, se muestra en mensaje en la pagina login.
+ * 
+ * @param username
+ * @param password
+ * @param request
+ * @param response
+ * @return
+ */
+
 
 @Controller
 public class EnelNotificacionController {
+	 @RequestMapping("/executeProof")
+	 @Produces(MediaType.APPLICATION_JSON)
+     @Consumes(MediaType.APPLICATION_JSON)
+	 public JSONObject sayPlainTextHello(JSONObject inputJsonObj) throws Exception {
 
-	
-	@RequestMapping("/welcome")
-	public ModelAndView helloWorld() {
- 
-		String message = "<br><div style='text-align:center;'>"
-				+ "<h3>********** Hello World, Spring MVC Tutorial</h3>This message is coming from CrunchifyHelloWorld.java **********</div><br><br>";
-		System.out.println(message);
-		return null;
-	}
+	    String input = (String) inputJsonObj.get("input");
+	    String output = "The input you sent is :" + input;
+	    JSONObject outputJsonObj = new JSONObject();
+	    outputJsonObj.put("output", output);
+	    return outputJsonObj;
+	  }
 }

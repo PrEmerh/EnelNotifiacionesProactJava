@@ -1,37 +1,29 @@
 package com.enelnotificacionesproactjava.controller;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-
-
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.apache.log4j.Logger;
 
 /**
- * Metodo al que se accede tras hacer submit en el login. Si el usuario existe nos lleva al jsp Hello y se guarda un User en session.
- * Si el usuario no existe, se muestra en mensaje en la pagina login.
+ * Metodo  encargado de recibir la informacion de las Tareas enviadas por la app de HEroku enelNotificacionProact por servicio Rest
  * 
- * @param username
- * @param password
- * @param request
- * @param response
- * @return
  */
-
-
 @Controller
+@RequestMapping("/execute")
 public class EnelNotificacionController {
-	 @RequestMapping("/executeProof")
-	 @Produces(MediaType.APPLICATION_JSON)
-     @Consumes(MediaType.APPLICATION_JSON)
-	 public JSONObject sayPlainTextHello(JSONObject inputJsonObj) throws Exception {
-
-	    String input = (String) inputJsonObj.get("input");
-	    String output = "The input you sent is :" + input;
-	    JSONObject outputJsonObj = new JSONObject();
-	    outputJsonObj.put("output", output);
-	    return outputJsonObj;
-	  }
+	
+	 final static Logger logger = Logger.getLogger(EnelNotificacionController.class);
+	
+	 @RequestMapping(value = "/getTaskInfo", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+	 public @ResponseBody Long addProvider(@RequestBody Task task) {
+		 logger.info("Tarea->Nombre Contacto:::" + task.getName());
+		 logger.info("Tarea->Telefono:::" + task.getPhone());
+		 System.out.println("Tarea->Nombre Contacto:::" + task.getName());
+		 System.out.println("Tarea->Nombre Contacto:::" + task.getPhone());
+		 return null;
+	}
 }
+

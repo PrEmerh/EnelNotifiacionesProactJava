@@ -33,7 +33,7 @@ public class EnelNotificacionController {
 			 EnviarSMS.createCaseInSalesforce(task);
 		 }
 		 catch(Exception e){
-			 System.out.println("Ha habido un error en " + task.getPhone());
+			 System.out.println("Ha habido un error en " + e);
 		 }
 		 
 		 return null;

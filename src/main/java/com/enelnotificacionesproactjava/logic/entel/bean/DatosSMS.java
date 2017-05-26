@@ -7,13 +7,13 @@ public class DatosSMS {
 	
 	private String telefono;
 	private Integer tipo_campania;
-	private Integer id_externo;
+	private String id_externo;
 	private String mensaje;
 	private String iso_3166;
 	
 
 
-	public String getTelefono() {
+	public String getTelefono_1() {
 		return telefono;
 	}
 
@@ -25,15 +25,15 @@ public class DatosSMS {
 		return tipo_campania;
 	}
 
-	public void setTipo_campania(Integer tipo_campania) {
-		this.tipo_campania = tipo_campania;
+	public void setTipo_campania(Integer staticFieldCampaintype) {
+		this.tipo_campania = staticFieldCampaintype;
 	}
 
-	public Integer getId_externo() {
+	public String getId_externo() {
 		return id_externo;
 	}
 
-	public void setId_externo(Integer id_externo) {
+	public void setId_externo(String id_externo) {
 		this.id_externo = id_externo;
 	}
 

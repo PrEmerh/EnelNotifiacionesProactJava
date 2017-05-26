@@ -1,6 +1,7 @@
 package com.enelnotificacionesproactjava.logic.entel.rest;
 
 import java.io.IOException;
+import java.net.Inet4Address;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -33,7 +34,9 @@ public class EnviarSMS {
 		
 		try {
 			
-			logger.trace("Inicio crear caso");
+			logger.trace("Inicio enviar tarea");
+			 System.out.println("Inicio enviar tarea");
+
 			
 			// SIN AUTENTICACION HTTP BASIC
 			//httpClient = HttpClientBuilder.create().build();
@@ -55,38 +58,51 @@ public class EnviarSMS {
 			
 			DatosSMS datosSMS = DatosSMS.copyFieldsFromHerokuToDatosSMSBean(datosMC);
 			//Setteamos campos fijos
-			datosSMS.setId_externo(1234);
-			datosSMS.setTipo_campania(95);
+			datosSMS.setId_externo("1234");
+			datosSMS.setTipo_campania(Constantes.STATIC_FIELD_CAMPAINTYPE);
 			datosSMS.setMensaje("mensaje de prueba");
-			datosSMS.setIso_3166("CHL");
+			datosSMS.setIso_3166(Constantes.STATIC_FIELD_ISO_3166);
 			
 			String jsonInString = mapper.writeValueAsString(datosSMS);
-			logger.info("Parseo JSON datosSMS: " + jsonInString);
+
 
 			StringEntity params = new StringEntity(jsonInString, "UTF-8");
+			logger.info("Parseo JSON datosSMS: " + params);
+			 System.out.println("Parseo JSON datosSMS: " + params);
+
+			
 			post.setEntity(params);
 			
-			logger.info("Intento de llamada POST crearCaso");
 			
+			System.out.println("IP DE HEROKU::::::::::"    +Inet4Address.getLocalHost().getHostAddress()); 
+			
+			logger.info("Intento de llamada POST crearCaso");
+			System.out.println("Intento de llamada POST crearCaso");
+			 			 			
 			HttpResponse response = httpClient.execute(post);
 			HttpEntity entity = response.getEntity();
 			String entityResponse = EntityUtils.toString(entity);
 			
 			logger.info("Respuesta: " + entityResponse);
+		    System.out.println("Respuesta: " + entityResponse);
+
 			logger.info("Status: " + response.getStatusLine());
+			System.out.println("Status: " + response.getStatusLine());
 			
-			EnviarSMSResponse enviarSMSResponse=null;
+			/*EnviarSMSResponse enviarSMSResponse=null;
 			enviarSMSResponse = mapper.readValue(entityResponse, EnviarSMSResponse.class);
 			
-			if (enviarSMSResponse != null /*&& !"0".equals(enviarSMSResponse.getControlErrores().getCodigoError())*/) {
+			if (enviarSMSResponse != null /*&& !"0".equals(enviarSMSResponse.getControlErrores().getCodigoError())) {
 				
 				logger.info("SMSResponse: " + enviarSMSResponse.getMensaje());
+				System.out.println("SMSResponse: " + enviarSMSResponse.getMensaje());
 				logger.info("Status: " + enviarSMSResponse.getStatus());
+				System.out.println("Status: " + enviarSMSResponse.getStatus());
 				
 				//logger.error(ConstantesError.SALESFORCE_CASE_CREATION_ERROR);
 				//logger.error("Codigo: " + createCaseResponse.getControlErrores().getCodigoError() + ". Mensaje: " + enviarSMSResponse.getControlErrores().getMensajeError());
 				//throw new EmergenciasException(enviarSMSResponse.getControlErrores().getCodigoError(), enviarSMSResponse.getControlErrores().getMensajeError());
-			}
+			}*/
 
 		} catch(IOException exception) {
 			logger.error("Error llamada a servicio REST", exception);

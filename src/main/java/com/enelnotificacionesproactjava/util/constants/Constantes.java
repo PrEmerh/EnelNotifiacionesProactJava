@@ -8,5 +8,8 @@ public class Constantes {
 	public static final String ENTEL_USERNAME = "enel";
 	public static final String ENTEL_PASSWORD = "enel.-2017";
 	
+	public static final Integer STATIC_FIELD_CAMPAINTYPE= 95;
+	public static final String STATIC_FIELD_ISO_3166= "CHL";
+	
 	
 }

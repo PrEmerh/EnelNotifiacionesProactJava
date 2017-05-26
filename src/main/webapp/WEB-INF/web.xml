@@ -25,6 +25,6 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>spring-web</servlet-name>
-    <url-pattern>/private/*</url-pattern>
+    <url-pattern>/</url-pattern>
   </servlet-mapping>
 </web-app>

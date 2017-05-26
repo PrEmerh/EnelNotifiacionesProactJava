@@ -1,101 +1,86 @@
 package com.enelnotificacionesproactjava.logic.entel.rest;
 
-import java.io.IOException;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.Authenticator;
+import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.PasswordAuthentication;
+import java.net.URL;
 import org.apache.log4j.Logger;
+import org.postgresql.core.Utils;
+import org.springframework.web.util.UriUtils;
 
-import com.enelnotificacionesproactjava.controller.Task;
 import com.enelnotificacionesproactjava.logic.entel.bean.DatosSMS;
-import com.enelnotificacionesproactjava.logic.entel.response.EnviarSMSResponse;
+import com.enelnotificacionesproactjava.logic.entel.bean.InArguments;
+import com.enelnotificacionesproactjava.logic.entel.bean.RequestObject;
 import com.enelnotificacionesproactjava.util.constants.Constantes;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
-public class EnviarSMS {
+  public class EnviarSMS {
 	final static Logger logger = Logger.getLogger(EnviarSMS.class);
 	
-	public static void createCaseInSalesforce(Task datosMC) throws Exception {		
+	public static void createCaseInSalesforce(DatosSMS datossms) throws Exception {		
+	                  	            
+	            String urlString ="http://ws.econecta.cl/api/citas/envio?tipo_campania=91&iso_3166=CHL&id_externo=externalIdField&telefono=numberField&mensaje=messageField";
+	            
+	            //Mapeamos campos dinamicos URL
+	            
+	            if(datossms!=null){
+		            if(datossms.getMensaje()!=null && datossms.getMensaje()!="" ){
+		            	urlString=urlString.replaceAll("messageField", UriUtils.encode(datossms.getMensaje(), "UTF-8"));
+		            }
+		            if(datossms.getIdExterno()!=null && datossms.getIdExterno()!="" ){
+		            	urlString=urlString.replaceAll("externalIdField", datossms.getIdExterno());
+		            }
+		            if(datossms.getNumero()!=null && datossms.getNumero()!="" ){
+		            	urlString=urlString.replaceAll("numberField", datossms.getNumero());
+		            }
+	            }
 
-		HttpClient httpClient = null;
-		HttpPost post = null;
-		ObjectMapper mapper = new ObjectMapper();
+		        try {
+		            Authenticator.setDefault(new CustomAuthenticator());
+		            URL url = new URL (urlString);	            
+		            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		            
+		            connection.setRequestMethod("GET");
+		            connection.setDoOutput(true);
+		            InputStream content = (InputStream)connection.getInputStream();
+		            
+		            System.out.println("Codigo Respuesta a REST::::::  "+ connection.getResponseCode());
+		            System.out.println("Mensaje Respuesta a REST::::::  "+ connection.getResponseMessage());
+		            System.out.println("URL que invocamos::::::  "+ connection.getURL());
+	
+		            BufferedReader in   = 
+		            new BufferedReader (new InputStreamReader (content));
+		            String line;
+		            while ((line = in.readLine()) != null) {
+		                System.out.println(line);
+		            }
+		            connection.disconnect();
+		        } catch(Exception e) {
+		            e.printStackTrace();
+		        }
+		        finally{
+		        	
+		        }
 		
-		try {
-			
-			logger.trace("Inicio crear caso");
-			
-			// SIN AUTENTICACION HTTP BASIC
-			//httpClient = HttpClientBuilder.create().build();
-						
-			// CON AUTENTICACION HTTP BASIC - INICIO
-			CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-			UsernamePasswordCredentials usernamePasswordCredentials = new UsernamePasswordCredentials(Constantes.ENTEL_USERNAME,Constantes.ENTEL_PASSWORD);
-			credentialsProvider.setCredentials(AuthScope.ANY, usernamePasswordCredentials);
-			
-			
-			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-			httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-			httpClient = httpClientBuilder.build();
-			
-			// CON AUTENTICACION HTTP BASIC - FIN
-			
-			post = new HttpPost(Constantes.ENTEL_REST_URL_ENVIAR);
+		    }	
+	
+  }
 
-			
-			DatosSMS datosSMS = DatosSMS.copyFieldsFromHerokuToDatosSMSBean(datosMC);
-			//Setteamos campos fijos
-			datosSMS.setId_externo(1234);
-			datosSMS.setTipo_campania(95);
-			datosSMS.setMensaje("mensaje de prueba");
-			datosSMS.setIso_3166("CHL");
-			
-			String jsonInString = mapper.writeValueAsString(datosSMS);
-			logger.info("Parseo JSON datosSMS: " + jsonInString);
-
-			StringEntity params = new StringEntity(jsonInString, "UTF-8");
-			post.setEntity(params);
-			
-			logger.info("Intento de llamada POST crearCaso");
-			
-			HttpResponse response = httpClient.execute(post);
-			HttpEntity entity = response.getEntity();
-			String entityResponse = EntityUtils.toString(entity);
-			
-			logger.info("Respuesta: " + entityResponse);
-			logger.info("Status: " + response.getStatusLine());
-			
-			EnviarSMSResponse enviarSMSResponse=null;
-			enviarSMSResponse = mapper.readValue(entityResponse, EnviarSMSResponse.class);
-			
-			if (enviarSMSResponse != null /*&& !"0".equals(enviarSMSResponse.getControlErrores().getCodigoError())*/) {
-				
-				logger.info("SMSResponse: " + enviarSMSResponse.getMensaje());
-				logger.info("Status: " + enviarSMSResponse.getStatus());
-				
-				//logger.error(ConstantesError.SALESFORCE_CASE_CREATION_ERROR);
-				//logger.error("Codigo: " + createCaseResponse.getControlErrores().getCodigoError() + ". Mensaje: " + enviarSMSResponse.getControlErrores().getMensajeError());
-				//throw new EmergenciasException(enviarSMSResponse.getControlErrores().getCodigoError(), enviarSMSResponse.getControlErrores().getMensajeError());
-			}
-
-		} catch(IOException exception) {
-			logger.error("Error llamada a servicio REST", exception);
-			throw new Exception("Error llamada a servicio REST", exception);
-		} finally {
-			if (post != null) {
-				post.releaseConnection();
-			}
-		}
-		
-	}
+  class CustomAuthenticator extends Authenticator {
+    // Called when password authorization is needed
+    protected PasswordAuthentication getPasswordAuthentication() {        
+        // Get information about the request
+        String prompt = getRequestingPrompt();
+        String hostname = getRequestingHost();
+        InetAddress ipaddr = getRequestingSite();
+        int port = getRequestingPort();
+        String username = Constantes.ENTEL_USERNAME;
+        String password = Constantes.ENTEL_PASSWORD;
+        // Return the information (a data holder that is used by Authenticator)
+        return new PasswordAuthentication(username, password.toCharArray());        
+    }     
 }

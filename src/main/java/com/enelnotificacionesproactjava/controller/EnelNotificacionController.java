@@ -1,11 +1,12 @@
 package com.enelnotificacionesproactjava.controller;
 import javax.ws.rs.core.MediaType;
+
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.apache.log4j.Logger;
 
 /**
  * Metodo  encargado de recibir la informacion de las Tareas enviadas por la app de HEroku enelNotificacionProact por servicio Rest

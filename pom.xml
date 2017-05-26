@@ -166,6 +166,11 @@
 			<artifactId>json</artifactId>
 			<version>${json.version}</version>
 		</dependency>
+		<dependency>
+    	<groupId>org.glassfish.jersey.media</groupId>
+    		<artifactId>jersey-media-json-jackson</artifactId>
+    		<version>2.17</version>
+		</dependency>
 		<!-- CXF Web Services -->
 		<dependency>
 		    <groupId>org.apache.cxf</groupId>

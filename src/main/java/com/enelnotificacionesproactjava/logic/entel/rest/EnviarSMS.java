@@ -19,7 +19,7 @@ import com.enelnotificacionesproactjava.controller.Task;
 import com.enelnotificacionesproactjava.logic.entel.bean.DatosSMS;
 import com.enelnotificacionesproactjava.logic.entel.response.EnviarSMSResponse;
 import com.enelnotificacionesproactjava.util.constants.Constantes;
-//import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class EnviarSMS {
@@ -29,18 +29,15 @@ public class EnviarSMS {
 
 		HttpClient httpClient = null;
 		HttpPost post = null;
-		//ObjectMapper mapper = new ObjectMapper();
+		ObjectMapper mapper = new ObjectMapper();
 		
 		try {
 			
-
-
 			logger.trace("Inicio crear caso");
 			
 			// SIN AUTENTICACION HTTP BASIC
 			//httpClient = HttpClientBuilder.create().build();
-			
-			
+						
 			// CON AUTENTICACION HTTP BASIC - INICIO
 			CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
 			UsernamePasswordCredentials usernamePasswordCredentials = new UsernamePasswordCredentials(Constantes.ENTEL_USERNAME,Constantes.ENTEL_PASSWORD);
@@ -57,8 +54,13 @@ public class EnviarSMS {
 
 			
 			DatosSMS datosSMS = DatosSMS.copyFieldsFromHerokuToDatosSMSBean(datosMC);
-			//String jsonInString = mapper.writeValueAsString(datosSMS);
-			String jsonInString = "";
+			//Setteamos campos fijos
+			datosSMS.setId_externo(1234);
+			datosSMS.setTipo_campania(95);
+			datosSMS.setMensaje("mensaje de prueba");
+			datosSMS.setIso_3166("CHL");
+			
+			String jsonInString = mapper.writeValueAsString(datosSMS);
 			logger.info("Parseo JSON datosSMS: " + jsonInString);
 
 			StringEntity params = new StringEntity(jsonInString, "UTF-8");
@@ -72,13 +74,19 @@ public class EnviarSMS {
 			
 			logger.info("Respuesta: " + entityResponse);
 			logger.info("Status: " + response.getStatusLine());
-
-//			enviarSMSResponse = mapper.readValue(entityResponse, EnviarSMSResponse.class);
-//			if (enviarSMSResponse != null && !"0".equals(enviarSMSResponse.getControlErrores().getCodigoError())) {
-//				logger.error(ConstantesError.SALESFORCE_CASE_CREATION_ERROR);
-//				logger.error("Codigo: " + createCaseResponse.getControlErrores().getCodigoError() + ". Mensaje: " + enviarSMSResponse.getControlErrores().getMensajeError());
-//				throw new EmergenciasException(enviarSMSResponse.getControlErrores().getCodigoError(), enviarSMSResponse.getControlErrores().getMensajeError());
-//			}
+			
+			EnviarSMSResponse enviarSMSResponse=null;
+			enviarSMSResponse = mapper.readValue(entityResponse, EnviarSMSResponse.class);
+			
+			if (enviarSMSResponse != null /*&& !"0".equals(enviarSMSResponse.getControlErrores().getCodigoError())*/) {
+				
+				logger.info("SMSResponse: " + enviarSMSResponse.getMensaje());
+				logger.info("Status: " + enviarSMSResponse.getStatus());
+				
+				//logger.error(ConstantesError.SALESFORCE_CASE_CREATION_ERROR);
+				//logger.error("Codigo: " + createCaseResponse.getControlErrores().getCodigoError() + ". Mensaje: " + enviarSMSResponse.getControlErrores().getMensajeError());
+				//throw new EmergenciasException(enviarSMSResponse.getControlErrores().getCodigoError(), enviarSMSResponse.getControlErrores().getMensajeError());
+			}
 
 		} catch(IOException exception) {
 			logger.error("Error llamada a servicio REST", exception);

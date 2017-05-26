@@ -5,7 +5,7 @@ import com.enelnotificacionesproactjava.controller.Task;
 
 public class DatosSMS {
 	
-	private String telefono_1;
+	private String telefono;
 	private Integer tipo_campania;
 	private Integer id_externo;
 	private String mensaje;
@@ -13,12 +13,12 @@ public class DatosSMS {
 	
 
 
-	public String getTelefono_1() {
-		return telefono_1;
+	public String getTelefono() {
+		return telefono;
 	}
 
-	public void setTelefono_1(String telefono_1) {
-		this.telefono_1 = telefono_1;
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
 	}
 
 	public Integer getTipo_campania() {
@@ -58,7 +58,7 @@ public class DatosSMS {
 	public static DatosSMS copyFieldsFromHerokuToDatosSMSBean(Task datosTarea) {
 		DatosSMS datosSMS = new DatosSMS();
 		if (datosTarea != null) {
-			datosSMS.setTelefono_1((datosTarea.getPhone() != null && !"".equals(datosTarea.getPhone()) ? datosTarea.getPhone() : ""));
+			datosSMS.setTelefono((datosTarea.getPhone() != null && !"".equals(datosTarea.getPhone()) ? datosTarea.getPhone() : ""));
 		}
 		return datosSMS;
 	}

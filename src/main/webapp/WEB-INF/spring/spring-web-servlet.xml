@@ -58,8 +58,7 @@
 	</bean>		
 	<mvc:annotation-driven />
  	<bean id="persistenceExceptionTranslationPostProcessor" class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
-	<mvc:resources mapping="/resources/**" location="/resources/"/> 
-	
+	<mvc:resources mapping="/resources/**" location="/resources/"/> 	
 	<!-- SPRING REST API -->
 	<bean id="contentNegotiationManager"  class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
         <property name="favorPathExtension" value="true" />
@@ -89,30 +88,6 @@
 			</bean>
 		</list>
 	</property>
-</bean>
-	
-	
-	
-	
-	
-		
+	</bean>
+	<!-- SPRING REST API -->
 </beans>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-

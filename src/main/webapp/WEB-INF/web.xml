@@ -10,7 +10,7 @@
   <listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener> 
-	
+  <!-- SPRING REST API -->
 	 
   <servlet>
     <servlet-name>spring-web</servlet-name>

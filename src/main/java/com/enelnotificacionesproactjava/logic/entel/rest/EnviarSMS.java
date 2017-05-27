@@ -1,117 +1,77 @@
 package com.enelnotificacionesproactjava.logic.entel.rest;
-
+ 
 import java.io.IOException;
-import java.net.Inet4Address;
-
+ 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
-
+ 
 import com.enelnotificacionesproactjava.controller.Task;
-import com.enelnotificacionesproactjava.logic.entel.bean.DatosSMS;
-import com.enelnotificacionesproactjava.logic.entel.response.EnviarSMSResponse;
 import com.enelnotificacionesproactjava.util.constants.Constantes;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-
+//import com.fasterxml.jackson.databind.ObjectMapper;
+ 
+ 
 public class EnviarSMS {
-	final static Logger logger = Logger.getLogger(EnviarSMS.class);
-	
-	public static void createCaseInSalesforce(Task datosMC) throws Exception {		
-
-		HttpClient httpClient = null;
-		HttpPost post = null;
-		ObjectMapper mapper = new ObjectMapper();
-		
-		try {
-			
-			logger.trace("Inicio enviar tarea");
-			 System.out.println("Inicio enviar tarea");
-
-			
-			// SIN AUTENTICACION HTTP BASIC
-			//httpClient = HttpClientBuilder.create().build();
-						
-			// CON AUTENTICACION HTTP BASIC - INICIO
-			CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-			UsernamePasswordCredentials usernamePasswordCredentials = new UsernamePasswordCredentials(Constantes.ENTEL_USERNAME,Constantes.ENTEL_PASSWORD);
-			credentialsProvider.setCredentials(AuthScope.ANY, usernamePasswordCredentials);
-			
-			
-			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-			httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-			httpClient = httpClientBuilder.build();
-			
-			// CON AUTENTICACION HTTP BASIC - FIN
-			
-			post = new HttpPost(Constantes.ENTEL_REST_URL_ENVIAR);
-
-			
-			DatosSMS datosSMS = DatosSMS.copyFieldsFromHerokuToDatosSMSBean(datosMC);
-			//Setteamos campos fijos
-			datosSMS.setId_externo("1234");
-			datosSMS.setTipo_campania(Constantes.STATIC_FIELD_CAMPAINTYPE);
-			datosSMS.setMensaje("mensaje de prueba");
-			datosSMS.setIso_3166(Constantes.STATIC_FIELD_ISO_3166);
-			
-			String jsonInString = mapper.writeValueAsString(datosSMS);
-
-
-			StringEntity params = new StringEntity(jsonInString, "UTF-8");
-			logger.info("Parseo JSON datosSMS: " + params);
-			 System.out.println("Parseo JSON datosSMS: " + params);
-
-			
-			post.setEntity(params);
-			
-			
-			System.out.println("IP DE HEROKU::::::::::"    +Inet4Address.getLocalHost().getHostAddress()); 
-			
-			logger.info("Intento de llamada POST crearCaso");
-			System.out.println("Intento de llamada POST crearCaso");
-			 			 			
-			HttpResponse response = httpClient.execute(post);
-			HttpEntity entity = response.getEntity();
-			String entityResponse = EntityUtils.toString(entity);
-			
-			logger.info("Respuesta: " + entityResponse);
-		    System.out.println("Respuesta: " + entityResponse);
-
-			logger.info("Status: " + response.getStatusLine());
-			System.out.println("Status: " + response.getStatusLine());
-			
-			/*EnviarSMSResponse enviarSMSResponse=null;
-			enviarSMSResponse = mapper.readValue(entityResponse, EnviarSMSResponse.class);
-			
-			if (enviarSMSResponse != null /*&& !"0".equals(enviarSMSResponse.getControlErrores().getCodigoError())) {
-				
-				logger.info("SMSResponse: " + enviarSMSResponse.getMensaje());
-				System.out.println("SMSResponse: " + enviarSMSResponse.getMensaje());
-				logger.info("Status: " + enviarSMSResponse.getStatus());
-				System.out.println("Status: " + enviarSMSResponse.getStatus());
-				
-				//logger.error(ConstantesError.SALESFORCE_CASE_CREATION_ERROR);
-				//logger.error("Codigo: " + createCaseResponse.getControlErrores().getCodigoError() + ". Mensaje: " + enviarSMSResponse.getControlErrores().getMensajeError());
-				//throw new EmergenciasException(enviarSMSResponse.getControlErrores().getCodigoError(), enviarSMSResponse.getControlErrores().getMensajeError());
-			}*/
-
-		} catch(IOException exception) {
-			logger.error("Error llamada a servicio REST", exception);
-			throw new Exception("Error llamada a servicio REST", exception);
-		} finally {
-			if (post != null) {
-				post.releaseConnection();
-			}
-		}
-		
-	}
+         final static Logger logger = Logger.getLogger(EnviarSMS.class);
+        
+         public static void createCaseInSalesforce(Task datosMC) throws Exception {          
+        
+ 
+                   HttpClient httpClient = null;
+                   HttpGet get = null;
+                   //ObjectMapper mapper = new ObjectMapper();
+                  
+                   try {
+                           
+ 
+                            logger.trace("Inicio crear caso");
+                           
+                            // SIN AUTENTICACION HTTP BASIC
+                            //httpClient = HttpClientBuilder.create().build();
+                           
+                           
+                            // CON AUTENTICACION HTTP BASIC - INICIO
+                            CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+                            UsernamePasswordCredentials usernamePasswordCredentials = new UsernamePasswordCredentials(Constantes.ENTEL_USERNAME,Constantes.ENTEL_PASSWORD);
+                            credentialsProvider.setCredentials(AuthScope.ANY, usernamePasswordCredentials);
+                           
+                           
+                            HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+                            httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+                            httpClient = httpClientBuilder.build();
+                           
+                            // CON AUTENTICACION HTTP BASIC - FIN
+                           
+                            get = new HttpGet(Constantes.ENTEL_REST_URL_ENVIAR+"?tipo_campania=91&iso_3166=CHL&id_externo=EX_ID_ENTEL_0001&telefono=56952086757&mensaje=PruebaSMSDeloitte");
+                           
+                           
+                            logger.info("Intento de llamada POST crearCaso");
+                           
+                            HttpResponse response = httpClient.execute(get);
+                            HttpEntity entity = response.getEntity();
+                            String entityResponse = EntityUtils.toString(entity);
+                           
+                            logger.info("Respuesta: " + entityResponse);
+                            logger.info("Status: " + response.getStatusLine());
+ 
+ 
+                   } catch(IOException exception) {
+                            logger.error("Error llamada a servicio REST", exception);
+                            throw new Exception("Error llamada a servicio REST", exception);
+                   } finally {
+                            if (get != null) {
+                                      get.releaseConnection();
+                            }
+                   }
+                  
+         }
+        
 }
